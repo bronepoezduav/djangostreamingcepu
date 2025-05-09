@@ -1,0 +1,53 @@
+# Python/Django
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+*.sqlite3
+*.db
+migrations/
+*.log
+local_settings.py
+*.env
+.env
+*.egg-info/
+dist/
+build/
+
+# Node.js/TypeScript/React
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+dist/
+build/
+*.tsbuildinfo
+coverage/
+.eslintcache
+.parcel-cache
+.cache
+
+# Media and static files
+media/
+staticfiles/
+collected_static/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+*.swp
+*~
+
+# Miscellaneous
+*.bak
+*.backup
+*.tmp
+*.temp

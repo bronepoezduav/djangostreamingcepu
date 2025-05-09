@@ -1,0 +1,43 @@
+1. Защита пользовательских учетных записей
+Многофакторная аутентификация (MFA): Используем библиотеку django-two-factor-auth для MFA через email или QR-коды (Google Authenticator).
+Ограничение попыток входа: Внедрим django-axes для блокировки IP после 5 неудачных попыток логина.
+CAPTCHA: Добавим django-recaptcha с Google reCAPTCHA на страницы входа и восстановления пароля.
+Сложность паролей: Используем zxcvbn в React для проверки паролей и django-password-validators на сервере.
+Хэширование паролей: Настроим Django с bcrypt для хранения паролей.
+Безопасные сессии: Используем JWT с коротким сроком действия (15 минут) через djangorestframework-simplejwt. Настроим HttpOnly, Secure, SameSite=Strict для cookies.
+2. Защита серверной инфраструктуры
+Rate Limiting: Настроим django-ratelimit для ограничения запросов (например, 100 запросов/минуту на IP).
+SQL-инъекции: Используем только Django ORM и параметризованные запросы. Ограничим права пользователя БД в PostgreSQL/MySQL.
+XSS: Настроим Content Security Policy (CSP) через django-csp. В React избежим dangerouslySetInnerHTML и используем sanitize-html для пользовательского ввода.
+HTTPS локально: Создадим самоподписной SSL-сертификат с помощью OpenSSL для локального HTTPS. Настроим HSTS в Django.
+Man-in-the-Middle: Шифруем чувствительные данные (например, JWT) с помощью PyCryptodome в Django.
+3. Защита контента
+DRM: Реализуем базовую защиту видео с помощью django-fernet-fields для шифрования ссылок на контент. Для продвинутого DRM рассмотрим интеграцию с Widevine (требует лицензии, можно протестировать локально).
+Водяные знаки: Добавим динамические текстовые водяные знаки (ID пользователя) на видео с помощью Pillow в Django.
+Ограничение устройств: Ограничим количество устройств для одного аккаунта через поле в модели пользователя Django.
+Подписанные URL: Настроим временные URL для видео с помощью django-signed-url.
+4. Общие меры безопасности
+Логирование: Настроим логирование через logging в Django, сохраняя логи в локальные файлы.
+Сканирование уязвимостей: Используем бесплатный OWASP ZAP для локального тестирования уязвимостей.
+Шифрование данных: Включим шифрование полей в БД с django-encrypted-fields. Шифруем файлы на диске с помощью PyCryptodome.
+API-защита: Используем OAuth2 через django-oauth-toolkit для защиты API. Настроим CORS с django-cors-headers.
+Код: Обфусцируем JS-код в React с помощью Terser. Используем TypeScript с eslint-plugin-security.
+5. Инструменты и подходы
+Пентест: Проведем локальное тестирование с Metasploit (бесплатно) или вручную по OWASP Top 10.
+Мониторинг: Настроим базовый мониторинг активности через логи и уведомления по email (django-smtp-email).
+Обучение: Изучим OWASP Secure Coding Practices для написания безопасного кода.
+Реализация в стеке
+Django: django-rest-framework, django-csp, django-axes, django-recaptcha, django-encrypted-fields.
+React: zxcvbn, sanitize-html, axios с интерцепторами, react-helmet для CSP.
+TypeScript: Строгие интерфейсы, ESLint с безопасными плагинами.
+Локальная инфраструктура: PostgreSQL/MySQL с ограниченными правами, самоподписной SSL, локальный Nginx для прокси (опционально).ъ
+
+Напоминание о плане безопасности
+Твой план защиты сетевой инфраструктуры:
+
+Rate Limiting: Исправляем кэш для django-ratelimit (сейчас делаем).
+SQL-инъекции: Уже используешь Django ORM, можем настроить права БД.
+XSS/CSP: django-csp настроен, можем проверить React (sanitize-html).
+HTTPS: Работает с самоподписным сертификатом.
+JWT шифрование: Реализовано с PyCryptodome.
+CORS: Настроен для https://localhost:3000.
