@@ -11,8 +11,6 @@ from core.views import (
 )
 from axes.handlers.proxy import AxesProxyHandler
 from django.urls import path
-from core.views import stream_video_with_watermark
-
 router = DefaultRouter()
 router.register(r'films', FilmViewSet)
 router.register(r'genres', GenreViewSet)
@@ -42,9 +40,6 @@ urlpatterns = [
     path('api/profile/', UserProfileView.as_view(), name='user-profile'),
     path('api/profile/avatar/', UserAvatarUpdateView.as_view(), name='profile-avatar'),
     path('api/user/<int:user_id>/reviews/', UserReviewsView.as_view(), name='user-reviews'),
-
-
-    path('api/films/<int:video_id>/stream/', stream_video_with_watermark, name='stream-video'),
 
     path('api/', include(router.urls)),
 ]

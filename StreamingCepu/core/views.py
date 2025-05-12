@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import generics, viewsets, status
@@ -13,25 +13,21 @@ from .models import Film, Genre, Comment, WatchHistory, Rating
 from .serializers import UserSerializer, FilmSerializer, GenreSerializer, CommentSerializer, WatchHistorySerializer, RatingSerializer, RegisterSerializer, ProfileSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-import logging
+import logging, os, requests, jwt
 from django.db.models import Avg, F
 from django.conf import settings
 from django.core.files.storage import default_storage
-import os
 from axes.handlers.proxy import AxesProxyHandler
 from axes.helpers import get_client_str  
 from axes.models import AccessAttempt 
 from django.http import JsonResponse  
-import requests  
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import StreamingHttpResponse
 from django.conf import settings
 from moviepy.editor import VideoFileClip, TextClip
 from moviepy.video.fx import all as vfx
-from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.tokens import AccessToken  
-import jwt  
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip  # Добавлен CompositeVideoClip
+from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip  
 
 from moviepy.config import change_settings
 change_settings({"IMAGEMAGICK_BINARY": r"E:\Programs\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
@@ -255,80 +251,6 @@ class UserReviewsView(APIView):
         serializer = RatingSerializer(reviews, many=True, context={'request': request})
         return Response(serializer.data)
         
-
-
-def add_watermark_to_video(video_path, watermark_text, output_path):
-    try:
-        video = VideoFileClip(video_path)
-        watermark = TextClip(watermark_text, fontsize=30, color='white')
-        watermark = watermark.set_opacity(0.8).set_position(('right', 'bottom')).set_duration(video.duration)
-        video_with_watermark = CompositeVideoClip([video, watermark])
-        video_with_watermark.write_videofile(output_path, codec='libx264', audio_codec='aac', logger='bar')
-        video.close()
-        watermark.close()
-        video_with_watermark.close()
-        logger.info(f"Водяной знак добавлен, файл сохранен: {output_path}")
-        return output_path
-    except Exception as e:
-        logger.error(f"Ошибка при добавлении водяного знака: {str(e)}")
-        raise
-
-def stream_video_with_watermark(request, video_id):
-    logger.info(f"Запрос стриминга: video_id={video_id}")
-    logger.info(f"Заголовки запроса: {dict(request.headers)}")
-    logger.info(f"Query-параметры: {request.GET}")
-
-    # Проверка токена из query-параметра
-    token = request.GET.get('token')
-    if not token:
-        logger.warning("Токен отсутствует в query-параметрах")
-        return JsonResponse({"error": "Требуется токен авторизации"}, status=401)
-
-    try:
-        # Декодируем токен для отладки
-        decoded_token = jwt.decode(token, options={"verify_signature": False})
-        logger.info(f"Декодированный токен: {decoded_token}")
-        
-        # Валидация токена
-        access_token = AccessToken(token)
-        user_id = access_token['user_id']
-        logger.info(f"Токен валиден, user_id={user_id}")
-    except Exception as e:
-        logger.error(f"Недействительный токен: {str(e)}")
-        return JsonResponse({"error": f"Недействительный токен: {str(e)}"}, status=401)
-
-    # Установка пользователя
-    try:
-        request.user = User.objects.get(id=user_id)
-        logger.info(f"Пользователь установлен из токена: {request.user}")
-    except User.DoesNotExist:
-        logger.warning(f"Пользователь не найден для user_id={user_id}")
-        return JsonResponse({"error": "Пользователь не найден"}, status=401)
-
-    film = get_object_or_404(Film, id=video_id)
-    video_path = film.video.path
-    watermark_text = f"User: {request.user.id}"
-    output_path = os.path.join(settings.MEDIA_ROOT, f"temp_{video_id}_{request.user.id}.mp4")
-
-    try:
-        add_watermark_to_video(video_path, watermark_text, output_path)
-        def stream_file(file_path):
-            try:
-                with open(file_path, 'rb') as f:
-                    while chunk := f.read(1024 * 1024):
-                        yield chunk
-                logger.info(f"Стриминг завершен для {file_path}")
-            finally:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-                    logger.info(f"Временный файл {file_path} удален")
-
-        response = StreamingHttpResponse(stream_file(output_path), content_type='video/mp4')
-        response['Content-Disposition'] = f'inline; filename="{film.title}.mp4"'
-        return response
-    except Exception as e:
-        logger.error(f"Ошибка стриминга видео {video_id}: {str(e)}")
-        return JsonResponse({"error": "Не удалось воспроизвести видео"}, status=500)
 
 class FilmViewSet(viewsets.ModelViewSet):
     queryset = Film.objects.all()

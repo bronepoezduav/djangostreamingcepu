@@ -1196,3 +1196,16 @@ AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
 AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
 AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
 AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 21:40:49.939265+00:00
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 21:40:49.939265+00:00

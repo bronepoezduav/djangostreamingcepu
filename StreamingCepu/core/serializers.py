@@ -117,18 +117,14 @@ class FilmSerializer(serializers.ModelSerializer):
         return round(avg, 2) if avg is not None else None
 
     def get_video_url(self, obj):
-        request = self.context.get('request')
-        if request:
-            # Формируем URL с query-параметром token
-            token = request.META.get('HTTP_AUTHORIZATION', '').replace('Bearer ', '')
-            if not token:
-                logger.warning("Токен отсутствует в заголовке Authorization")
-            url = request.build_absolute_uri(f'/api/films/{obj.id}/stream/')
-            if token:
-                url += f'?token={token}'
-            logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
-            return url
-        logger.warning("Request отсутствует в контексте сериализатора")
+        if obj.video:
+            request = self.context.get('request')
+            if request:
+                url = request.build_absolute_uri(obj.video.url)
+                logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
+                return url
+            logger.warning("Request отсутствует в контексте сериализатора")
+        logger.warning(f"Поле video пустое для film_id={obj.id}")
         return None
 
 class FilmGenreSerializer(serializers.ModelSerializer):
