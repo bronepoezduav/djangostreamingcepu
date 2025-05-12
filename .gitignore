@@ -18,6 +18,8 @@ local_settings.py
 dist/
 build/
 
+docs.txt
+
 # Node.js/TypeScript/React
 node_modules/
 npm-debug.log

@@ -1,13 +1,13 @@
 1. Защита пользовательских учетных записей
-Многофакторная аутентификация (MFA): Используем библиотеку django-two-factor-auth для MFA через email или QR-коды (Google Authenticator).
+-Многофакторная аутентификация (MFA): Используем библиотеку django-two-factor-auth для MFA через email или QR-коды (Google Authenticator).
 Ограничение попыток входа: Внедрим django-axes для блокировки IP после 5 неудачных попыток логина.
-CAPTCHA: Добавим django-recaptcha с Google reCAPTCHA на страницы входа и восстановления пароля.
-Сложность паролей: Используем zxcvbn в React для проверки паролей и django-password-validators на сервере.
-Хэширование паролей: Настроим Django с bcrypt для хранения паролей.
-Безопасные сессии: Используем JWT с коротким сроком действия (15 минут) через djangorestframework-simplejwt. Настроим HttpOnly, Secure, SameSite=Strict для cookies.
++CAPTCHA: Добавим django-recaptcha с Google reCAPTCHA на страницы входа и восстановления пароля.
++Сложность паролей: Используем zxcvbn в React для проверки паролей и django-password-validators на сервере.
++Хэширование паролей: Настроим Django с bcrypt для хранения паролей.
++Безопасные сессии: Используем JWT с коротким сроком действия (15 минут) через djangorestframework-simplejwt. Настроим HttpOnly, Secure, SameSite=Strict для cookies.
 2. Защита серверной инфраструктуры
-Rate Limiting: Настроим django-ratelimit для ограничения запросов (например, 100 запросов/минуту на IP).
-SQL-инъекции: Используем только Django ORM и параметризованные запросы. Ограничим права пользователя БД в PostgreSQL/MySQL.
+-Rate Limiting: Настроим django-ratelimit для ограничения запросов (например, 100 запросов/минуту на IP).
++SQL-инъекции: Используем только Django ORM и параметризованные запросы. Ограничим права пользователя БД в PostgreSQL/MySQL.
 XSS: Настроим Content Security Policy (CSP) через django-csp. В React избежим dangerouslySetInnerHTML и используем sanitize-html для пользовательского ввода.
 HTTPS локально: Создадим самоподписной SSL-сертификат с помощью OpenSSL для локального HTTPS. Настроим HSTS в Django.
 Man-in-the-Middle: Шифруем чувствительные данные (например, JWT) с помощью PyCryptodome в Django.
