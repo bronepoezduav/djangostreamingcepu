@@ -127,6 +127,8 @@ class FilmSerializer(serializers.ModelSerializer):
         logger.warning(f"Поле video пу стое для film_id={obj.id}")
         return None
 
+
+
 class FilmGenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilmGenre

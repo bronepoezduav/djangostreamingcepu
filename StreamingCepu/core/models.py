@@ -11,6 +11,8 @@ def default_avatar():
 def user_avatar_path(instance, filename):
     return f'avatars/user_{instance.user.id}/{filename}'
 
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to=user_avatar_path, default='avatars/default.png', null=True, blank=True)    
