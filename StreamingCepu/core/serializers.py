@@ -6,6 +6,9 @@ import re
 from django.utils import timezone
 from .models import UserProfile
 from django.db.models import Avg  
+import logging
+logger = logging.getLogger(__name__)  
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -101,15 +104,32 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class FilmSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(many=True, read_only=True)
-    reviews = RatingSerializer(many=True, read_only=True, source='rating_set')  
-    average_rating = serializers.SerializerMethodField()  # Добавляем поле для средней оценки
+    reviews = RatingSerializer(many=True, read_only=True, source='rating_set')
+    average_rating = serializers.SerializerMethodField()
+    video_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Film
         fields = '__all__'
+
     def get_average_rating(self, obj):
-        # Вычисляем среднюю оценку по всем связанным рейтингам
         avg = obj.rating_set.aggregate(Avg('rating'))['rating__avg']
-        return round(avg, 2) if avg is not None else None  # Округляем до 2 знаков или None, если оценок нет
+        return round(avg, 2) if avg is not None else None
+
+    def get_video_url(self, obj):
+        request = self.context.get('request')
+        if request:
+            # Формируем URL с query-параметром token
+            token = request.META.get('HTTP_AUTHORIZATION', '').replace('Bearer ', '')
+            if not token:
+                logger.warning("Токен отсутствует в заголовке Authorization")
+            url = request.build_absolute_uri(f'/api/films/{obj.id}/stream/')
+            if token:
+                url += f'?token={token}'
+            logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
+            return url
+        logger.warning("Request отсутствует в контексте сериализатора")
+        return None
 
 class FilmGenreSerializer(serializers.ModelSerializer):
     class Meta:

@@ -8,7 +8,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
 
 SECRET_KEY = 'django-insecure-^hooipk+4a#6guee5rfp!c7ms$*redtmtglb2=ubw&mh!*p8)#'
-FERNET_KEY = env('FERNET_KEY')
 
 DEBUG = True
 
@@ -31,7 +30,7 @@ INSTALLED_APPS = [
     "StreamingCepu",
     'django_filters',
     'axes',
-    'fernet_fields',
+    
 ]
 
 MIDDLEWARE = [
@@ -86,30 +85,18 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
+            'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'axes.log'),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
         },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-        },
-        'video_access': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'video_access.log'),
         },
     },
     'loggers': {
         'axes': {
             'handlers': ['file', 'console'],
             'level': 'DEBUG',
-            'propagate': True,
-        },
-        'video_access': {
-            'handlers': ['video_access', 'console'],
-            'level': 'INFO',
             'propagate': True,
         },
     },

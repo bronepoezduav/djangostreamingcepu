@@ -1133,3 +1133,66 @@ Using parameter credentials to get username with key settings.AXES_USERNAME_FORM
 AXES: Getting access attempts that are newer than 2025-05-09 13:05:57.432040+00:00
 AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
 AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 17:46:04.576318+00:00
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 17:46:04.576318+00:00
+AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 OPR/118.0.0.0", path_info: "/admin/login/"}.
+AXES: Cleaned up 2 expired access attempts from database that were older than 2025-05-12 17:46:04.576318+00:00
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Reset 0 access attempts from database.
+AXES: Deleted 0 failed login attempts by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36 OPR/118.0.0.0", path_info: "/admin/login/"} from database.
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 18:34:33.172387+00:00
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 18:34:33.172387+00:00
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 19:01:40.990102+00:00
+Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+AXES: Getting access attempts that are newer than 2025-05-12 19:01:40.990102+00:00
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
+AXES: BEGIN version 7.1.0, blocking by combination of username and ip_address
