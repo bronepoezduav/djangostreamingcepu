@@ -123,8 +123,8 @@ class FilmSerializer(serializers.ModelSerializer):
                 url = request.build_absolute_uri(obj.video.url)
                 logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
                 return url
-            logger.warning("Request отсутствует в контексте сериализатора")
-        logger.warning(f"Поле video пустое для film_id={obj.id}")
+            logger.warning("Request отсу тствует в контексте сериализатора")
+        logger.warning(f"Поле video пу стое для film_id={obj.id}")
         return None
 
 class FilmGenreSerializer(serializers.ModelSerializer):
