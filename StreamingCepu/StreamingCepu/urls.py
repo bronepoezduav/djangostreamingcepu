@@ -4,17 +4,25 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from rest_framework.routers import DefaultRouter
+from core import views  
 from core.views import (
     CustomTokenObtainPairView, register, CommentCreateView, CommentListView,
     CommentUpdateDeleteView, RatingListCreateView, RatingUpdateView, RatingDeleteView,
-    UserProfileView, UserAvatarUpdateView, UserReviewsView, FilmViewSet, GenreViewSet, WatchHistoryViewSet
+    UserProfileView, UserAvatarUpdateView, UserReviewsView, FilmViewSet, GenreViewSet, WatchHistoryViewSet, stream_video
 )
+
 from axes.handlers.proxy import AxesProxyHandler
 from django.urls import path
+from core.models import Film  
+
+
+
 router = DefaultRouter()
 router.register(r'films', FilmViewSet)
 router.register(r'genres', GenreViewSet)
 router.register(r'watch-history', WatchHistoryViewSet)
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +49,10 @@ urlpatterns = [
     path('api/profile/avatar/', UserAvatarUpdateView.as_view(), name='profile-avatar'),
     path('api/user/<int:user_id>/reviews/', UserReviewsView.as_view(), name='user-reviews'),
 
+    # Стриминг видео
+    path('api/films/<int:video_id>/video/', stream_video, name='stream_video'),
+
+    # Router после всех маршрутов
     path('api/', include(router.urls)),
 ]
 

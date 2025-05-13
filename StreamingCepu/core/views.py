@@ -20,7 +20,7 @@ from django.core.files.storage import default_storage
 from axes.handlers.proxy import AxesProxyHandler
 from axes.helpers import get_client_str  
 from axes.models import AccessAttempt 
-from django.http import JsonResponse  
+from django.http import JsonResponse, HttpResponse, StreamingHttpResponse
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import StreamingHttpResponse
 from django.conf import settings
@@ -29,10 +29,57 @@ from moviepy.video.fx import all as vfx
 from rest_framework_simplejwt.tokens import AccessToken  
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip  
 
-from moviepy.config import change_settings
-change_settings({"IMAGEMAGICK_BINARY": r"E:\Programs\ImageMagick-7.1.1-Q16-HDRI\magick.exe"})
 
 logger = logging.getLogger(__name__)  
+
+def stream_video(request, video_id):
+    logger.info(f"Запрос стриминга: video_id={video_id}, метод={request.method}")
+    
+    referer = request.META.get('HTTP_REFERER', '')
+    if not referer.startswith('http://localhost:3000'):
+        logger.warning(f"Недопустимый Referer: {referer}")
+        return JsonResponse({"error": "Доступ запрещён"}, status=403)
+
+    film = get_object_or_404(Film, id=video_id)
+    video_path = film.video.path
+    logger.info(f"Путь к видео: {video_path}")
+
+    token = request.GET.get('token')
+    logger.info(f"Получен токен: {token}")
+    watermark_text = "fu"
+    if token:
+        try:
+            access_token = AccessToken(token)
+            user_id = access_token['user_id']
+            watermark_text = f"u{user_id}"
+            logger.info(f"Токен валиден, user_id={user_id}")
+        except Exception as e:
+            logger.error(f"Ошибка валидации токена: {str(e)}, тип: {type(e).__name__}")
+            watermark_text = "fu"
+
+    if not os.path.exists(video_path):
+        logger.error(f"Файл не найден: {video_path}")
+        return JsonResponse({"error": "Видеофайл не найден"}, status=404)
+
+    if request.method == 'HEAD':
+        response = HttpResponse(status=200)
+        response['X-Watermark-Text'] = watermark_text
+        response['Content-Type'] = 'video/mp4'
+        logger.info(f"HEAD ответ, X-Watermark-Text: {watermark_text}")
+        return response
+
+    def stream_file():
+        with open(video_path, 'rb') as f:
+            while chunk := f.read(1024 * 1024):
+                yield chunk
+        logger.info(f"Стриминг video_id={video_id} завершен")
+
+    response = StreamingHttpResponse(stream_file(), content_type='video/mp4')
+    response['Content-Disposition'] = f'inline; filename="{film.title}.mp4"'
+    response['Accept-Ranges'] = 'bytes'
+    response['X-Watermark-Text'] = watermark_text
+    logger.info(f"GET ответ, X-Watermark-Text: {watermark_text}")
+    return response
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
