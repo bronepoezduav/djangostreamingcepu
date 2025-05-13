@@ -1,3 +1,4 @@
+// MoviePage.tsx
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -49,58 +50,47 @@ const MoviePage = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // Загрузка данных фильма
+    const token = localStorage.getItem("access");
     axios
-      .get(`http://localhost:8000/api/films/${id}/`)
+      .get(`http://localhost:8000/api/films/${id}/`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      })
       .then((response) => {
         const movieData = response.data;
-        console.log("Данные фильма с сервера:", movieData);
         console.log("video_url из API:", movieData.video_url);
-
-        // Устанавливаем video_url без токена
-        if (movieData.video_url) {
-          movieData.video_url = movieData.video_url.split('?')[0]; // Удаляем существующий ?token=...
-          console.log("video_url:", movieData.video_url);
-        } else {
-          console.warn("video_url отсутствует, видео может не загрузиться");
-        }
-
-        const formattedReviews: Review[] = movieData.reviews.map((review: any) => ({
-          id: review.id,
-          user_id: review.user_id,
-          username: review.username,
-          rating: Number(review.rating),
-          avatar: review.avatar || null,
-          comment: review.comment,
-          rated_at: review.rated_at,
-        }));
-
-        setMovie({ ...movieData, reviews: formattedReviews });
+        setMovie({
+          ...movieData,
+          reviews: movieData.reviews.map((review: any) => ({
+            id: review.id,
+            user_id: review.user_id,
+            username: review.username,
+            rating: Number(review.rating),
+            avatar: review.avatar || null,
+            comment: review.comment,
+            rated_at: review.rated_at,
+          })),
+        });
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Ошибка при загрузке фильма:", error);
-        setError(error?.message || "Не удалось загрузить фильм.");
+        console.error("Ошибка загрузки фильма:", error);
+        setError("Не удалось загрузить фильм.");
         setLoading(false);
       });
 
-    // Загрузка комментариев (с токеном, если есть)
-    const token = localStorage.getItem("access");
     axios
       .get(`http://localhost:8000/api/films/${id}/comments/list/`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       })
       .then((response) => {
-        console.log("Комментарии с сервера:", response.data);
         setComments(response.data);
       })
       .catch((error) => {
-        console.error("Ошибка при загрузке комментариев:", error);
+        console.error("Ошибка комментариев:", error);
       });
   }, [id]);
 
   if (loading) return <p className="text-center text-gray-500">Загрузка...</p>;
-  if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!movie) return <p className="text-center text-gray-500">Фильм не найден</p>;
 
   const averageRating =
@@ -134,13 +124,15 @@ const MoviePage = () => {
                 />
               </div>
             </div>
-            {movie.video_url ? (
+            {movie.video_url && !error ? (
               <MoviePlayer
                 videoUrl={movie.video_url}
                 onError={(msg) => setError(msg)}
               />
             ) : (
-              <p className="text-center text-gray-500">Видео недоступно</p>
+              <div className="relative w-full max-w-5xl mx-auto mt-10 rounded-xl overflow-hidden shadow-2xl bg-gray-900 p-4 text-center text-red-500">
+                {error || "Видео недоступно"}
+              </div>
             )}
           </div>
           <div className="w-full md:w-1/4 space-y-1">
