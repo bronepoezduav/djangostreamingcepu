@@ -81,24 +81,40 @@ AXES_LOCKOUT_CALLABLE = 'core.views.lockout_response'
 AXES_USERNAME_FORM_FIELD = 'username'  # Поле username в запросе
 AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]  # Блокировка по комбинации username и ip_address
 
+# Убедимся, что BASE_DIR указывает на корень проекта
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Создаём папку logs, если она не существует
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'axes.log'),
+            'filename': os.path.join(LOG_DIR, 'app.log'),
+            'formatter': 'verbose',
         },
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'loggers': {
-        'axes': {
+        '': {
             'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
