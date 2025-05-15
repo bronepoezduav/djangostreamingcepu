@@ -28,9 +28,24 @@ from moviepy.editor import VideoFileClip, TextClip
 from moviepy.video.fx import all as vfx
 from rest_framework_simplejwt.tokens import AccessToken  
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip  
+from django.views.decorators.csrf import csrf_exempt
 
 
 logger = logging.getLogger(__name__)  
+
+
+@csrf_exempt
+def csp_report(request):
+    """Логирование CSP-нарушений."""
+    if request.method == 'POST':
+        try:
+            report = request.body.decode('utf-8')
+            logger.warning(f"CSP нарушение: {report}")
+            return JsonResponse({"status": "reported"}, status=200)
+        except Exception as e:
+            logger.error(f"Ошибка обработки CSP-отчёта: {str(e)}")
+            return JsonResponse({"error": "Invalid report"}, status=400)
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def stream_video(request, video_id):
     logger.info(f"Запрос стриминга: video_id={video_id}, метод={request.method}")

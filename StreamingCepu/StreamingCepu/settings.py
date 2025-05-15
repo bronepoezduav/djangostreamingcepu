@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "StreamingCepu",
     'django_filters',
     'axes',
+    'csp'
     
 ]
 
@@ -130,6 +131,31 @@ DATABASES = {
         'PORT': '3306',              
     }
 }
+
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ["'self'"],
+        'script-src': [
+            "'self'",
+            "http://localhost:3000",
+            "'unsafe-inline'",  # Временно для React
+        ],
+        'style-src': [
+            "'self'",
+            "http://localhost:3000",
+            "'unsafe-inline'",  # Временно для inline-стилей
+        ],
+        'img-src': ["'self'", "data:"],
+        'media-src': ["'self'", "http://localhost:8000"],
+        'connect-src': [
+            "'self'",
+            "http://localhost:8000",
+            "http://localhost:3000",
+        ],
+        'report-uri': '/csp-report/',
+    }
+}
+CONTENT_SECURITY_POLICY_REPORT_ONLY = True  # Тестируем без блокировки
 
 
 AUTH_PASSWORD_VALIDATORS = [

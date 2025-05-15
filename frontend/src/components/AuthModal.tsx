@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { login, register } from "../services/auth";
-import zxcvbn from "zxcvbn"; // Импорт zxcvbn
+import zxcvbn from "zxcvbn";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [recaptchaScore, setRecaptchaScore] = useState<number | null>(null);
   const [passwordStrength, setPasswordStrength] = useState<string>("");
   const [passwordFeedback, setPasswordFeedback] = useState<string[]>([]);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   // Загрузка reCAPTCHA v3
   useEffect(() => {
@@ -25,7 +26,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     if (!document.getElementById(scriptId)) {
       const script = document.createElement("script");
       script.id = scriptId;
-      script.src = "https://www.google.com/recaptcha/api.js?render=6LdzEDArAAAAABffNXSSMuqo20I3VW6S3m-EQvaJ"; // Замени
+      script.src = "https://www.google.com/recaptcha/api.js?render=6LdzEDArAAAAABffNXSSMuqo20I3VW6S3m-EQvaJ";
       script.async = true;
       script.defer = true;
       script.onerror = () => {
@@ -42,13 +43,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     }
   }, []);
 
-  // Проверка силы пароля с zxcvbn
+  // Проверка силы пароля и условий
   useEffect(() => {
-    if (password) {
+    const errors: string[] = [];
+    if (password && !isLogin) {
       const result = zxcvbn(password);
+      if (result.score < 2) {
+        errors.push("Пароль слишком слабый. Используйте более сложный пароль.");
+      }
+      if (password.length < 8) {
+        errors.push("Пароль должен содержать не менее 8 символов.");
+      }
+      if (password2 && password !== password2) {
+        errors.push("Пароли не совпадают.");
+      }
+
       const score = result.score;
       const feedback = result.feedback.suggestions || [];
-
       switch (score) {
         case 0:
         case 1:
@@ -71,7 +82,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setPasswordStrength("");
       setPasswordFeedback([]);
     }
-  }, [password]);
+    setPasswordErrors(errors);
+  }, [password, password2, isLogin]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +91,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setRecaptchaStatus("");
     setRecaptchaScore(null);
 
-    // Проверка пароля на минимальную силу
+    // Проверка пароля на минимальную силу и длину
     if (!isLogin && password) {
       const result = zxcvbn(password);
       if (result.score < 2) {
@@ -88,6 +100,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       }
       if (password !== password2) {
         setErrorMessage("Пароли не совпадают.");
+        return;
+      }
+      if (password.length < 8) {
+        setErrorMessage("Пароль должен содержать не менее 8 символов.");
         return;
       }
     }
@@ -104,6 +120,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             .catch((error: any) => reject(error));
         });
       });
+
+      console.log("Request payload:", { username, email, password, password2, recaptcha_token: recaptchaToken });
 
       let response;
       if (isLogin) {
@@ -122,6 +140,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       if (error.data?.recaptcha_score) {
         setRecaptchaScore(error.data.recaptcha_score);
       }
+      console.log("Raw error:", error);
       const { status, data } = error || {};
       console.log("Ошибка в AuthModal:", { status, data });
 
@@ -141,6 +160,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         setErrorMessage(data.username.join(" "));
       } else if (data?.password) {
         setErrorMessage(data.password.join(" "));
+      } else if (data?.email) {
+        setErrorMessage(data.email.join(" "));
       } else if (data) {
         setErrorMessage(
           typeof data === "string" ? data : Object.values(data).flat().join(" ")
@@ -224,6 +245,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   className="w-full p-3 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-red-500 focus:outline-none text-gray-900"
                   required
                 />
+                {passwordErrors.length > 0 && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+                    <ul>
+                      {passwordErrors.map((error, index) => (
+                        <li key={index}>{error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {passwordStrength && (
                   <div className="mb-3 text-sm text-center">
                     <span
