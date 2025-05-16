@@ -17,9 +17,6 @@ local_settings.py
 *.egg-info/
 dist/
 build/
-
-*.txt
-
 # Node.js/TypeScript/React
 node_modules/
 npm-debug.log
