@@ -8,7 +8,7 @@ from .models import UserProfile
 from django.db.models import Avg  
 import logging
 logger = logging.getLogger(__name__)  
-
+import bleach
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -123,7 +123,7 @@ class FilmSerializer(serializers.ModelSerializer):
             token = request.META.get('HTTP_AUTHORIZATION', '').replace('Bearer ', '')
             if token:
                 url += f'?token={token}'
-            logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
+            # logger.info(f"Сгенерирован video_url для film_id={obj.id}: {url}")
             return url
         return None
 
@@ -141,7 +141,11 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'user', 'username', 'avatar', 'film', 'text', 'created_at']
-        read_only_fields = ['id', 'created_at', 'username', 'avatar']  # Убрали 'user'
+        read_only_fields = ['id', 'created_at', 'username', 'avatar']
+
+    def validate_text(self, value):
+        # Очищаем HTML-теги, разрешая только безопасные
+        return bleach.clean(value, tags=[], strip=True)
 
     def get_avatar(self, obj):
         profile = getattr(obj.user, 'profile', None)

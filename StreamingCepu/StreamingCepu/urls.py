@@ -14,7 +14,7 @@ from core.views import (
 from axes.handlers.proxy import AxesProxyHandler
 from django.urls import path
 from core.models import Film  
-
+from core.views import csp_report
 
 
 router = DefaultRouter()
@@ -51,6 +51,8 @@ urlpatterns = [
 
     # Стриминг видео
     path('api/films/<int:video_id>/video/', stream_video, name='stream_video'),
+
+    path('csp-report/', csp_report, name='csp_report'),
 
     # Router после всех маршрутов
     path('api/', include(router.urls)),

@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_URL = '/media/' 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 SECRET_KEY = 'django-insecure-^hooipk+4a#6guee5rfp!c7ms$*redtmtglb2=ubw&mh!*p8)#'
 
